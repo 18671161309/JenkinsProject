@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+
+def getMyStoreFile(){
+    if("true".equals(IS_JENKINS)){
+        return file("使用Jenkins打包时的证书路径")
+    }else{
+        return file("../jenkinsProject.jks")
+    }
+}
+
+android {
+    compileSdkVersion 26
+    signingConfigs {
+        release {
+            keyAlias 'china317'
+            keyPassword 'china317'
+            storeFile getMyStoreFile()
+            storePassword 'china317'
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.trip.jenkinsproject"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            // 移除无用的resource文件
+            shrinkResources true
+            minifyEnabled true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+
+            outputFileName = "JenKins_${defaultConfig.versionName}_"+BUILD_TYPE+".apk"
+        }
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
