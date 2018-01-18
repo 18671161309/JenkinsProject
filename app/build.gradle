@@ -1,11 +1,9 @@
 apply plugin: 'com.android.application'
 
 def getMyStoreFile(){
-    if("true".equals(IS_JENKINS)){
-        return file("使用Jenkins打包时的证书路径")
-    }else{
+
         return file("../jenkinsProject.jks")
-    }
+
 }
 
 android {
@@ -49,7 +47,7 @@ android {
     android.applicationVariants.all { variant ->
         variant.outputs.all {
 
-            outputFileName = "JenKins_${defaultConfig.versionName}_"+BUILD_TYPE+".apk"
+            outputFileName = "JenKins_${defaultConfig.versionName}.apk"
         }
     }
 }
